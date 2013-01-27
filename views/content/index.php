@@ -1,0 +1,1 @@
+<h1><?=lang('jrcron_home')?></h1>
