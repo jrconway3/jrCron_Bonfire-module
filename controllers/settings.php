@@ -41,6 +41,7 @@ class Settings extends Admin_Controller
     {
 		parent::__construct();
 
+		$this->auth->restrict('Site.Settings.View');
 		$this->auth->restrict('jrCron.Settings.View');
 
 		$this->load->model('jrcron_model');

@@ -15,11 +15,18 @@ Initially I'm only configuring this to do what I need it to do for this job, but
 I originally called it that, but then I designed I should probably differentiate it from other potential modules that may be made in the future. So I gave it my own prefix.
 
 
+### Q. Is this module plug-in and play?
 
-## Update #1:
+No. Unfortunately, with this kind of thing its really pretty much impossible. It simply makes it easier to manage and watch cron jobs. You have to be the one to write your own cron jobs, but if you use the function wrappers properly, it will automatically keep records of your cron jobs and enable you to shut off certain jobs from running if you decide to go that route.
 
-I've got a rough draft now. It should work successfully as a solo module, but its incomplete. I still have to connect some functions up. But in order to do that I have to actually test cron jobs in action. I don't think I can do that locally, though I can run some manual tests.
+Naturally, you have to connect it up in cron. This is vital. It won't run at all if its not in cron in the first place. But my idea is that this module will work well as a wrapper for anything that you may want to run in cron. Primarily its for my own ease of use, but anyone can use it if they wish.
 
-There's currently one issue I've noticed; when trying to install it throws an "array to string" conversion error in libraries/Log.php. As far as I can tell its nothing that I'm doing, its a bug in CI or maybe Bonfire. The migration process still works, you'll just get errors on a white screen and have to manually go back to the main page. I'm not sure how to fix this at this point.
 
-Tomorrow I'll work on processing actual jobs and having them get archived in the logs. I'll need to create another table to archive cron logs, though. At this point I'm just going to go for the ability to literally turn off the cron job; I'm not going to enable the ability to customize cron jobs yet as its too much work for what I need to do. But that's a potential future goal if I can ever get around to doing it.
+
+## Update #2:
+
+Second update. I'm really having a lot of fun working on this. The only reason I haven't gotten further on the module itself is, of course, because I'm working on my own job with it. That code is not being committed, but I am committing some example cron jobs just using basic Hello World code.
+
+I think I may have fixed the issue with the Migrations now. I *think* its because of case sensitivity; the file name of the first migration was lowercase, but the function name had it mixed up. The second migration I added this time to fill in a few fields and add two new tables (for future use) installed perfectly. But I'll keep an eye out just in case.
+
+I added some more wrapper code in the jrCron public contrller and have all three admin controllers displaying now. I do not have anything in the admin controllers yet, though. Most of the work I spent on this was getting my actual cron job to work, and I'm very close to finishing that now. Once that's done I have to get back to the other functions. Hopefully tomorrow I can find some time to finish this; I needed it done this weekend but I got delayed today. -_-

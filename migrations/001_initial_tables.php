@@ -1,5 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+  * jrCron Initial Updates
+  *
+  * @author David A Conway Jr.
+  * @desc The initial table setup for jrCron.
+  */
 class Migration_Initial_tables extends Migration {
 
 	public function up() 

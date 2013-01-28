@@ -16,18 +16,18 @@
 // ------------------------------------------------------------------------
 
 /**
- * jrCron Content Context
+ * jrCron Reports Context
  *
- * Allows the administrator to view and download Scraper CSV Exports.
+ * Allows the administrator to view the jrcron logs.
  *
  * @package    Bonfire
- * @subpackage Modules_Jrcron
+ * @subpackage Modules_Reports
  * @category   Controllers
  * @author     jrConway
- * @link       https://github.com/jrconway3
+ * @link       https://github.com/jrconway3/jrCron_Bonfire-module
  *
  */
-class Content extends Admin_Controller
+class Reports extends Admin_Controller
 {
 
 	//--------------------------------------------------------------------
@@ -41,14 +41,21 @@ class Content extends Admin_Controller
 	{
 		parent::__construct();
 
-		$this->auth->restrict('Site.Settings.View');
-		$this->auth->restrict('jrCron.Content.View');
-	
-		$this->load->model('jrcron_model');
+		$this->auth->restrict('Site.Reports.View');
+		$this->auth->restrict('jrCron.Settings.View');
 
 		$this->lang->load('jrcron');
 
-		Template::set('toolbar_title', lang('jrcron_exports'));
+		Template::set('toolbar_title', lang('jrcron_title'));
+
+		Assets::add_js(Template::theme_url('js/bootstrap.js'));
+		Assets::add_js($this->load->view('reports/activities_js', null, true), 'inline');
+
+		Assets::add_js( array ( Template::theme_url('js/jquery.dataTables.min.js' )) );
+		Assets::add_js( array ( Template::theme_url('js/bootstrap-dataTables.js' )) );
+		Assets::add_css( array ( Template::theme_url('css/datatable.css') ) ) ;
+		Assets::add_css( array ( Template::theme_url('css/bootstrap-dataTables.css') ) ) ;
+
 
 	}//end __construct()
 
@@ -63,20 +70,22 @@ class Content extends Admin_Controller
 	 */
 	public function index()
 	{
-		if (has_permission('jrCron.Content.View'))
+		if (has_permission('Jrcron.User.View')
+				|| has_permission('Jrcron.Module.View')
+				|| has_permission('Jrcron.Date.View'))
 		{
 			// get top 5 modules
-			/*$this->db->group_by('module');
+			$this->db->group_by('module');
 			Template::set('top_modules', $this->jrcron_model->select('module, COUNT(module) AS jrcron_count')
-					->where('jrcrons.deleted', 0)
+					->where('activities.deleted', 0)
 					->limit(5)
 					->order_by('jrcron_count', 'DESC')
 					->find_all() );
 
 			// get top 5 users and usernames
-			$this->db->join('users', 'jrcrons.user_id = users.id', 'left');
+			$this->db->join('users', 'activities.user_id = users.id', 'left');
 			$query = $this->db->select('username, user_id, COUNT(user_id) AS jrcron_count')
-					->where('jrcrons.deleted', 0)
+					->where('activities.deleted', 0)
 					->group_by('user_id')
 					->order_by('jrcron_count','DESC')
 					->limit(5)
@@ -85,10 +94,18 @@ class Content extends Admin_Controller
 
 			Template::set('users', $this->user_model->find_all());
 			Template::set('modules', module_list());
-			Template::set('jrcrons', $this->jrcron_model->find_all());*/
+			Template::set('activities', $this->jrcron_model->find_all());
 			Template::render();
+		}
+		else if(has_permission('Jrcron.Own.View'))
+		{
+			$this->jrcron_own();
+
 		}
 
 	}//end index()
+
+
+	//--------------------------------------------------------------------
 
 }//end class
