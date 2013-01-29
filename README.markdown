@@ -23,10 +23,6 @@ Naturally, you have to connect it up in cron. This is vital. It won't run at all
 
 
 
-## Update #2:
+## Update #3:
 
-Second update. I'm really having a lot of fun working on this. The only reason I haven't gotten further on the module itself is, of course, because I'm working on my own job with it. That code is not being committed, but I am committing some example cron jobs just using basic Hello World code.
-
-I think I may have fixed the issue with the Migrations now. I *think* its because of case sensitivity; the file name of the first migration was lowercase, but the function name had it mixed up. The second migration I added this time to fill in a few fields and add two new tables (for future use) installed perfectly. But I'll keep an eye out just in case.
-
-I added some more wrapper code in the jrCron public contrller and have all three admin controllers displaying now. I do not have anything in the admin controllers yet, though. Most of the work I spent on this was getting my actual cron job to work, and I'm very close to finishing that now. Once that's done I have to get back to the other functions. Hopefully tomorrow I can find some time to finish this; I needed it done this weekend but I got delayed today. -_-
+Added some basic model functions for starting and stopping cron sessions and updating the cron log. These haven't been tested yet.
