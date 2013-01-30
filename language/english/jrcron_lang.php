@@ -22,5 +22,12 @@
 */
 
 $lang['jrcron_home']					= 'Home';
-$lang['jrcron_exports']					= 'Cron Exports';
 $lang['jrcron_settings']				= 'Cron Settings';
+$lang['jrcron_review']					= 'Review Exported Files';
+$lang['jrcron_exports']					= 'Cron Exports';
+$lang['jrcron_export_job']				= 'Job';
+$lang['jrcron_export_run']				= 'Runtime';
+$lang['jrcron_export_time']				= 'Finished';
+$lang['jrcron_export_file']				= 'File';
+$lang['jrcron_export_download']			= 'Download';
+$lang['jrcron_export_none']				= 'There are currently no exported files available.';

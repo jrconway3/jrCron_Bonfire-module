@@ -36,6 +36,8 @@ class Jrcron extends Front_Controller {
 	protected $sess_id;
 	protected $sess_res;
 	protected $sess_err;
+	protected $sess_job;
+	protected $sess_export;
 
 	/**
 	  * Initialize Jrcron Controller
@@ -47,6 +49,8 @@ class Jrcron extends Front_Controller {
 	{ 
 		parent::__construct();
 		
+		$this->load->library('curl');
+		$this->load->library('csv');
 		$this->load->model('jrcron_model');
 	}
 	
@@ -77,6 +81,8 @@ class Jrcron extends Front_Controller {
 		$this->sess_id      = md5(uniqid());
 		$this->sess_err     = false;
 		$this->sess_res     = '';
+		$this->sess_job     = $job;
+		$this->sess_export  = $job . '_' . date("n-j-y", $this->sess_start) . '_' . $this->sess_start;
 
 		// Try Running Jobs
 		try {
@@ -93,8 +99,10 @@ class Jrcron extends Front_Controller {
 		$this->sess_end     = time();
 		$this->sess_runtime = $this->sess_end - $this->sess_start;
 		if(empty($this->sess_err)) {
-			$this->sess_res = 'Completed';
+			$this->sess_res = 'Completed successfully.';
 		}
+		$this->jrcron_model->end_session($this->sess_job, $this->sess_id, $this->sess_runtime, 
+											$this->sess_res, $this->sess_err, $this->sess_export);
 	}//end run()
 
 	//--------------------------------------------------------------------
@@ -104,10 +112,12 @@ class Jrcron extends Front_Controller {
 	  *
 	  * @author David A Conway Jr.
 	  * @date 1/27/13
-	  * @param string $job : name of the method to process
 	  * @return false if cron job doesn't exist
 	  */
-	function job($job = '') {
+	function job() {
+		// Set Job as Current Session
+		$job = $this->sess_job;
+
 		// No Job Set?
 		if(empty($job)) {
 			// Get Jobs from DB
@@ -121,7 +131,7 @@ class Jrcron extends Front_Controller {
 		}
 
 		// Job was started; let's log it
-		## TO DO ##
+		$this->jrcron_model->start_session($this->sess_job, $this->sess_id, $this->sess_export);
 
 		// Does the job exist?
 		if(!method_exists($this, $job)) {

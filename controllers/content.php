@@ -43,7 +43,9 @@ class Content extends Admin_Controller
 
 		$this->auth->restrict('Site.Settings.View');
 		$this->auth->restrict('jrCron.Content.View');
-	
+
+		$this->load->library('csv');
+
 		$this->load->model('jrcron_model');
 
 		$this->lang->load('jrcron');
@@ -65,27 +67,13 @@ class Content extends Admin_Controller
 	{
 		if (has_permission('jrCron.Content.View'))
 		{
-			// get top 5 modules
-			/*$this->db->group_by('module');
-			Template::set('top_modules', $this->jrcron_model->select('module, COUNT(module) AS jrcron_count')
-					->where('jrcrons.deleted', 0)
-					->limit(5)
-					->order_by('jrcron_count', 'DESC')
+			// Get All Finished Exports
+			Template::set('exports', $this->jrcron_model->select('cron_job, finished_on, runtime, export_name')
+					->where('runtime >', 0)
+					->order_by('finished_on', 'DESC')
 					->find_all() );
 
-			// get top 5 users and usernames
-			$this->db->join('users', 'jrcrons.user_id = users.id', 'left');
-			$query = $this->db->select('username, user_id, COUNT(user_id) AS jrcron_count')
-					->where('jrcrons.deleted', 0)
-					->group_by('user_id')
-					->order_by('jrcron_count','DESC')
-					->limit(5)
-					->get($this->jrcron_model->get_table());
-			Template::set('top_users', $query->result());
-
-			Template::set('users', $this->user_model->find_all());
-			Template::set('modules', module_list());
-			Template::set('jrcrons', $this->jrcron_model->find_all());*/
+			// Render Template
 			Template::render();
 		}
 

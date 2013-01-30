@@ -47,14 +47,15 @@ class Jrcron_model extends MY_Model {
 	  * @param string  $job    : name of the cron job to log message for
 	  * @param string  $sess   : the cron session to add log for
 	  */
-	function start_session($job, $sess) {
+	function start_session($job, $sess, $export) {
 		// Add Cron Log
-		$this->add_cron_log($job, 'Cron session has started.', $sess);
+		$this->add_cron_log($job, 'Cron session has started.', $sess, false, $export);
 
 		// Insert Cron Job
 		$cron = array(
-			'cron_job'  => $job,
-			'cron_sess' => $sess
+			'cron_job'     => $job,
+			'cron_sess'    => $sess,
+			'export_name'  => $export
 		);
 		parent::insert($cron);
 	}
@@ -75,16 +76,16 @@ class Jrcron_model extends MY_Model {
 	  */
 	function end_session($job, $sess, $time, $msg = 'Cron session has ended.', $error = false, $export = '') {
 		// Add Cron Log
-		$this->add_cron_log($job, $msg, $sess, $error, $export, $runtime);
+		$this->add_cron_log($job, $msg, $sess, $error, $export, $time);
 
 		// Insert Cron Job
 		$cron = array(
 			'cron_result'  => $msg,
 			'cron_error'   => $error,
-			'runtime'      => $sess,
-			'finished_on'  => time()
+			'runtime'      => $time,
+			'finished_on'  => date("Y-m-d H:m:s")
 		);
-		parent::update($cron, array('cron_job' => $job, 'cron_sess' => $sess));
+		parent::update('cron_sess', $sess, $cron);
 	}
 
 	//--------------------------------------------------------------------
@@ -109,7 +110,7 @@ class Jrcron_model extends MY_Model {
 			'log_sess'    => $sess,
 			'log_msg'     => $msg,
 			'log_error'   => (!empty($error) ? '1' : '0'),
-			'created_on'  => time(),
+			'created_on'  => date("Y-m-d H:m:s"),
 			'export_name' => $export,
 			'runtime'     => $time,
 			'deleted'     => 0
