@@ -32,6 +32,7 @@ class Jrcron extends Front_Controller {
 	// Define Globals
 	protected $sess_start;
 	protected $sess_runtime;
+	protected $sess_cron;
 	protected $sess_end;
 	protected $sess_id;
 	protected $sess_res;
@@ -101,8 +102,8 @@ class Jrcron extends Front_Controller {
 		if(empty($this->sess_err)) {
 			$this->sess_res = 'Completed successfully.';
 		}
-		$this->jrcron_model->end_session($this->sess_job, $this->sess_id, $this->sess_runtime, 
-											$this->sess_res, $this->sess_err, $this->sess_export);
+		$this->jrcron_model->end_session($this->sess_cron, $this->sess_job, $this->sess_id,
+						$this->sess_runtime, $this->sess_res, $this->sess_err, $this->sess_export);
 	}//end run()
 
 	//--------------------------------------------------------------------
@@ -131,7 +132,8 @@ class Jrcron extends Front_Controller {
 		}
 
 		// Job was started; let's log it
-		$this->jrcron_model->start_session($this->sess_job, $this->sess_id, $this->sess_export);
+		$this->sess_cron = $this->jrcron_model->start_session($this->sess_job, $this->sess_id,
+																$this->sess_export);
 
 		// Does the job exist?
 		if(!method_exists($this, $job)) {

@@ -23,6 +23,6 @@ Naturally, you have to connect it up in cron. This is vital. It won't run at all
 
 
 
-## Update #4:
+## Update #5:
 
-Major updates. Connected up some more models, and added functions to the CSV library to generate files and add rows to files. I added some more wrapper code to the jrcron controller, and created a basic exports list which shows off all exported files available from cron jobs (if applicable). Still no settings yet, and I've now found a couple more bugs that I'll report on later.
+Quick updates. Really distracted today, but I wanted to get something out. I posted an update that -should- fix my problems with closing existing cron sessions. But I still need to test it out.

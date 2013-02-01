@@ -57,7 +57,7 @@ class Jrcron_model extends MY_Model {
 			'cron_sess'    => $sess,
 			'export_name'  => $export
 		);
-		parent::insert($cron);
+		return parent::insert($cron);
 	}
 
 	//--------------------------------------------------------------------
@@ -67,6 +67,7 @@ class Jrcron_model extends MY_Model {
 	  *
 	  * @author David A Conway Jr.
 	  * @desc Start a cron session.
+	  * @param int     $id     : id of the cron session to end
 	  * @param string  $job    : name of the cron job to end session for
 	  * @param string  $sess   : the cron session to end
 	  * @param string  $time   : the runtime in seconds of the cron session
@@ -74,7 +75,7 @@ class Jrcron_model extends MY_Model {
 	  * @param boolean $error  : true if logging an error, false otherwise; default: false
 	  * @param string  $export : the name of the exported file
 	  */
-	function end_session($job, $sess, $time, $msg = 'Cron session has ended.', $error = false, $export = '') {
+	function end_session($id, $job, $sess, $time, $msg = 'Cron session has ended.', $error = false, $export = '') {
 		// Add Cron Log
 		$this->add_cron_log($job, $msg, $sess, $error, $export, $time);
 
@@ -85,7 +86,7 @@ class Jrcron_model extends MY_Model {
 			'runtime'      => $time,
 			'finished_on'  => date("Y-m-d H:m:s")
 		);
-		parent::update('cron_sess', $sess, $cron);
+		parent::update($id, $cron);
 	}
 
 	//--------------------------------------------------------------------
