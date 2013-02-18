@@ -10,6 +10,9 @@ class Migration_Initial_tables extends Migration {
 
 	public function up() 
 	{
+		// Get Prefix
+		$prefix = $this->db->dbprefix;
+
 		// Add View Cron Content Permission
 		$permissions = array();
 		$perms = array(
@@ -118,6 +121,9 @@ class Migration_Initial_tables extends Migration {
 	
 	public function down() 
 	{
+		// Get Prefix
+		$prefix = $this->db->dbprefix;
+
 		// Get Permissions
 		$this->db->or_where('name', 'jrCron.Content.View');
 		$this->db->or_where('name', 'jrCron.Content.Delete');

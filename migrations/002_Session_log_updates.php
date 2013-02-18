@@ -10,6 +10,9 @@ class Migration_Session_log_updates extends Migration {
 
 	public function up() 
 	{
+		// Get Prefix
+		$prefix = $this->db->dbprefix;
+
 		// Load DBForge
 		$this->load->dbforge();
 
@@ -80,6 +83,18 @@ class Migration_Session_log_updates extends Migration {
 		$this->db->insert("{$prefix}permissions", $perms);
 		$permissions[] = $this->db->insert_id();
 
+		// Add Cron Permissions to Administrator Role
+		if(is_array($permissions) && count($permissions)) {
+			foreach($permissions as $permission_id) {
+				$role_perm = array(
+					'role_id' => 1,
+					'permission_id' => $permission_id
+				);
+				$this->db->insert("{$prefix}role_permissions", $role_perm);
+			}
+		}
+
+
 		// Remove Edit Cron Settings Permissions
 		$this->db->or_where('name', 'jrCron.Settings.Edit');
 		$query = $this->db->get("{$prefix}permissions");
@@ -95,13 +110,16 @@ class Migration_Session_log_updates extends Migration {
 	
 	public function down() 
 	{
+		// Get Prefix
+		$prefix = $this->db->dbprefix;
+
 		// Load DBForge
 		$this->load->dbforge();
 
 		// Drop Session Column
-		$this->dbforge->drop_column('cron_sess');
-		$this->dbforge->drop_column('cron_result');
-		$this->dbforge->drop_column('cron_error');
+		$this->dbforge->drop_column('jrcron', 'cron_sess');
+		$this->dbforge->drop_column('jrcron', 'cron_result');
+		$this->dbforge->drop_column('jrcron', 'cron_error');
 
 		// Drop jrCron_Logs Table
 		$this->dbforge->drop_table('jrcron_logs');
@@ -128,6 +146,17 @@ class Migration_Session_log_updates extends Migration {
 		);
 		$this->db->insert("{$prefix}permissions", $perms);
 		$permissions[] = $this->db->insert_id();
+
+		// Add Cron Permissions to Administrator Role
+		if(is_array($permissions) && count($permissions)) {
+			foreach($permissions as $permission_id) {
+				$role_perm = array(
+					'role_id' => 1,
+					'permission_id' => $permission_id
+				);
+				$this->db->insert("{$prefix}role_permissions", $role_perm);
+			}
+		}
 	}
 	
 	//--------------------------------------------------------------------

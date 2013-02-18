@@ -83,7 +83,6 @@ class Jrcron extends Front_Controller {
 		$this->sess_err     = false;
 		$this->sess_res     = '';
 		$this->sess_job     = $job;
-		$this->sess_export  = $job . '_' . date("n-j-y", $this->sess_start) . '_' . $this->sess_start;
 
 		// Try Running Jobs
 		try {
@@ -102,8 +101,8 @@ class Jrcron extends Front_Controller {
 		if(empty($this->sess_err)) {
 			$this->sess_res = 'Completed successfully.';
 		}
-		$this->jrcron_model->end_session($this->sess_cron, $this->sess_job, $this->sess_id,
-						$this->sess_runtime, $this->sess_res, $this->sess_err, $this->sess_export);
+		$this->jrcron_model->end_session($this->sess_cron, $this->sess_job, $this->sess_id, $this->sess_runtime, 
+											$this->sess_res, $this->sess_err, $this->sess_export);
 	}//end run()
 
 	//--------------------------------------------------------------------
@@ -131,15 +130,35 @@ class Jrcron extends Front_Controller {
 			die;
 		}
 
-		// Job was started; let's log it
-		$this->sess_cron = $this->jrcron_model->start_session($this->sess_job, $this->sess_id,
-																$this->sess_export);
+		// Get Cron Job
+		$cron = $this->jrcron_model->get_cron_job($job);
+
+		// Job Disabled?
+		if(!empty($cron->job_name) && empty($cron->job_enabled)) {
+			die;
+		}
+
+		// Job Session Started
+		$this->sess_cron = $this->jrcron_model->start_session($this->sess_job, $this->sess_id, '');
 
 		// Does the job exist?
-		if(!method_exists($this, $job)) {
+		if(empty($cron->job_name) || !method_exists($this, $job)) {
 			// The called job doesn't exist; throw error
 			throw(new Exception("A cron job named \"$job\" was called that does not exist."));
 			return false;
+		}
+
+		// Get Cron File
+		$this->sess_export = $this->jrcron_model->get_cron_file($cron->job_file, $cron);
+
+		// Set Time Limit
+		if(!empty($cron->limit_time)) {
+			set_time_limit($cron->limit_time);
+		}
+
+		// Set Memory Limit
+		if(!empty($cron->limit_memory)) {
+			ini_set('memory_limit', $cron->limit_memory . 'M');
 		}
 
 		// Run Extracted Cron Job
@@ -176,7 +195,6 @@ class Jrcron extends Front_Controller {
 	//--------------------------------------------------------------------
 
 
-
 	//--------------------------------------------------------------------
 	## Common Functions
 	//--------------------------------------------------------------------
@@ -195,5 +213,5 @@ class Jrcron extends Front_Controller {
 	}
 
 	//--------------------------------------------------------------------
-	
+
 }
