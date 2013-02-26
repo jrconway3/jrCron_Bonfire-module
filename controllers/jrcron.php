@@ -98,6 +98,9 @@ class Jrcron extends Front_Controller {
 		// End Cron Session
 		$this->sess_end     = time();
 		$this->sess_runtime = $this->sess_end - $this->sess_start;
+		if(empty($this->sess_runtime)) {
+			$this->sess_runtime = 1;
+		}
 		if(empty($this->sess_err)) {
 			$this->sess_res = 'Completed successfully.';
 		}

@@ -23,6 +23,11 @@ Naturally, you have to connect it up in cron. This is vital. It won't run at all
 
 
 
+## Update #7:
+
+I just made a quick bugfix. So long as the job is successful runtime should be no less than one second.
+
+
 ## Update #6:
 
 Its been about a week since I've updated, huh? Well, I've made some MAJOR updates over the past few days.
